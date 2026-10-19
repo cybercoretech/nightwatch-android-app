@@ -136,7 +136,7 @@ fun PushScreen(model: NightwatchModel, state: UiState) {
             current == null -> {
                 Text(stringResource(R.string.push_pick), color = Grid.muted, style = MaterialTheme.typography.bodySmall)
                 distributors.forEach { d ->
-                    NeonButton(d, color = Grid.green, modifier = Modifier.fillMaxWidth()) { Push.use(context, d); tick++ }
+                    NeonButton(Push.label(context, d), color = Grid.green, modifier = Modifier.fillMaxWidth()) { Push.use(context, d); tick++ }
                 }
                 (context as? Activity)?.let { act ->
                     NeonButton(stringResource(R.string.push_default), modifier = Modifier.fillMaxWidth()) { Push.enable(act) { tick++ } }
@@ -144,7 +144,7 @@ fun PushScreen(model: NightwatchModel, state: UiState) {
             }
             else -> {
                 Panel {
-                    Text(stringResource(R.string.push_using, current), style = MaterialTheme.typography.bodyMedium, color = Grid.green)
+                    Text(stringResource(R.string.push_using, Push.label(context, current)), style = MaterialTheme.typography.bodyMedium, color = Grid.green)
                     state.hosts.forEach { h ->
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(h.label, Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)

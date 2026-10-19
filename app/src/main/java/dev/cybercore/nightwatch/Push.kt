@@ -23,7 +23,18 @@ object Push {
 
     fun distributors(context: Context): List<String> = UnifiedPush.getDistributors(context)
 
-    fun current(context: Context): String? = UnifiedPush.getAckDistributor(context)
+    /**
+     * The chosen distributor. The *saved* one, not the acknowledged one:
+     * UnifiedPush only acknowledges a distributor after its first
+     * registration, so waiting for the ack meant never registering.
+     */
+    fun current(context: Context): String? = UnifiedPush.getSavedDistributor(context)
+
+    /** "ntfy" rather than "io.heckel.ntfy". */
+    fun label(context: Context, pkg: String): String = runCatching {
+        val pm = context.packageManager
+        pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString()
+    }.getOrDefault(pkg)
 
     /** Status line per host for the settings screen. */
     fun status(context: Context, hostId: String): String? = prefs(context).getString("status:$hostId", null)
