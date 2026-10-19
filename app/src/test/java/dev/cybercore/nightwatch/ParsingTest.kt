@@ -53,4 +53,11 @@ class ParsingTest {
         assertNull(pairingFrom("nightwatch", "add", (q + ("url" to "http://evil.example:8769"))::get))
         assertNull(pairingFrom("nightwatch", "add", (q + ("token" to "nw_x_y"))::get))
     }
+
+    @Test
+    fun testPushesAreRecognised() {
+        assertEquals(true, isTestPush("""{"type":"test","host":"blackbox"}""".toByteArray()))
+        assertEquals(false, isTestPush("""{"type":"alert","id":3}""".toByteArray()))
+        assertEquals(false, isTestPush("not json".toByteArray()))
+    }
 }

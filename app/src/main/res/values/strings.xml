@@ -100,6 +100,9 @@
     <string name="push_failed">failed: %1$s</string>
     <string name="push_refused">host refused: %1$s</string>
     <string name="push_off_on_host">This host has push turned off: add your ntfy server to [push] allowed_hosts in nightwatch\'s config.toml.</string>
+    <string name="push_test">Send a test push from %1$s</string>
+    <string name="push_test_title">Push from %1$s works</string>
+    <string name="push_test_body">Alerts from this host will arrive right away.</string>
     <string name="push_fallback">Without push, Nightwatch still checks every host for new alerts every 15 minutes.</string>
 
     <string name="channel_crit">Critical alerts</string>

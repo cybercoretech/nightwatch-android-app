@@ -178,6 +178,7 @@ class NightwatchApi private constructor(private val base: HttpUrl, private val t
 
     suspend fun pushEndpoint(): String? = JSONObject(get("push")).optNullableString("endpoint")
     suspend fun registerPush(endpoint: String) { post("push", body = JSONObject().put("endpoint", endpoint)) }
+    suspend fun testPush(): String = post("push", "test").optString("message")
     suspend fun unregisterPush() {
         call(request(url("push")).delete().build())
     }

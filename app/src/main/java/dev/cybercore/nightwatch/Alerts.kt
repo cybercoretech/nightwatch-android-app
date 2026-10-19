@@ -85,6 +85,19 @@ object AlertSync {
         runCatching { NotificationManagerCompat.from(context).notify("${host.id}:${alert.id}".hashCode(), n) }
     }
 
+    /** Fixed text for a test push: proves gateway → ntfy → phone works. */
+    fun notifyTest(context: Context, host: Host) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return
+        val n = NotificationCompat.Builder(context, CHANNEL_WARN)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(context.getString(R.string.push_test_title, host.label))
+            .setContentText(context.getString(R.string.push_test_body))
+            .setAutoCancel(true)
+            .build()
+        runCatching { NotificationManagerCompat.from(context).notify("${host.id}:test".hashCode(), n) }
+    }
+
     /** Background safety net for missed pushes: every 15 minutes, the Android minimum. */
     fun schedulePeriodic(context: Context) {
         val req = PeriodicWorkRequestBuilder<AlertWorker>(15, TimeUnit.MINUTES)

@@ -143,6 +143,15 @@ class NightwatchModel(app: Application) : AndroidViewModel(app) {
 
     fun clearMessage() = _state.update { it.copy(message = null) }
 
+    /** Asks the current host to push a test message to this phone. */
+    fun testPush() {
+        val api = api ?: return
+        viewModelScope.launch {
+            val msg = runCatching { api.testPush() }.fold({ it.ifBlank { "sent" } }, { it.message ?: "failed" })
+            _state.update { it.copy(message = msg) }
+        }
+    }
+
     /** Opens Add host pre-filled; nothing is saved until the user taps Connect. */
     fun pair(p: Pairing) {
         stopLogs()

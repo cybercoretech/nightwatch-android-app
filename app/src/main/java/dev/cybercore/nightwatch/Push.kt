@@ -81,9 +81,13 @@ class NightwatchPushService : PushService() {
         }
     }
 
-    /** The message only says "something happened on this host". */
+    /**
+     * The message only says "something happened on this host" (or "this is
+     * a test"); what's shown always comes from the app, never the payload.
+     */
     override fun onMessage(message: PushMessage, instance: String) {
-        if (HostStore(this).get(instance) != null) AlertSync.syncSoon(this, instance)
+        val host = HostStore(this).get(instance) ?: return
+        if (isTestPush(message.content)) AlertSync.notifyTest(this, host) else AlertSync.syncSoon(this, instance)
     }
 
     override fun onRegistrationFailed(reason: FailedReason, instance: String) {
@@ -98,3 +102,7 @@ class NightwatchPushService : PushService() {
         Push.setStatus(this, instance, getString(R.string.push_off))
     }
 }
+
+/** `{"type":"test", ...}` from `POST /v1/push/test`. */
+fun isTestPush(content: ByteArray): Boolean =
+    runCatching { org.json.JSONObject(String(content, Charsets.UTF_8)).optString("type") == "test" }.getOrDefault(false)

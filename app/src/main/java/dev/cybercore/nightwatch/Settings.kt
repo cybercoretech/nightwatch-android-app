@@ -152,6 +152,7 @@ fun PushScreen(model: NightwatchModel, state: UiState) {
                         }
                     }
                 }
+                NeonButton(stringResource(R.string.push_test, state.host?.label ?: ""), color = Grid.green, modifier = Modifier.fillMaxWidth()) { model.testPush() }
                 ActionRow {
                     NeonButton(stringResource(R.string.push_reregister), modifier = Modifier.weight(1f)) { Push.registerAll(context); tick++ }
                     NeonButton(stringResource(R.string.push_disable), color = Grid.red, modifier = Modifier.weight(1f)) { Push.disable(context); tick++ }
