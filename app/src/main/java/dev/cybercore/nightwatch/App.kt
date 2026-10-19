@@ -56,7 +56,8 @@ fun NightwatchApp(model: NightwatchModel, state: UiState, authenticate: (String,
     LaunchedEffect(state.message) {
         state.message?.let { snackbar.showSnackbar(it); model.clearMessage() }
     }
-    BackHandler(enabled = state.stack.isNotEmpty() && !(state.hosts.isEmpty() && state.stack.size == 1)) { model.back() }
+    // Recomposes on every state change, so `enabled` follows the tab and page.
+    BackHandler(enabled = state.canGoBack) { model.back() }
 
     Box(Modifier.fillMaxSize()) {
         GridBackdrop()

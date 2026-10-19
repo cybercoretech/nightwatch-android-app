@@ -83,6 +83,13 @@ data class UiState(
     val host: Host? get() = hosts.firstOrNull { it.id == hostId }
     val detail: Detail? get() = stack.lastOrNull()
     val canOperate: Boolean get() = session?.operate == true
+
+    /**
+     * Whether Back stays in the app: an open page closes, another tab returns
+     * to Watch. On Watch (or the first-run Add host) Android leaves the app.
+     */
+    val canGoBack: Boolean
+        get() = !(hosts.isEmpty() && stack.size <= 1) && (stack.isNotEmpty() || tab != Tab.Overview)
 }
 
 class NightwatchModel(app: Application) : AndroidViewModel(app) {
@@ -113,11 +120,14 @@ class NightwatchModel(app: Application) : AndroidViewModel(app) {
         load(detail)
     }
 
-    /** False when there was nothing to go back to. */
+    /** See [UiState.canGoBack]. False when Android should handle Back. */
     fun back(): Boolean {
         val s = _state.value
-        if (s.stack.isEmpty()) return false
-        if (s.hosts.isEmpty() && s.stack.size == 1) return false
+        if (!s.canGoBack) return false
+        if (s.stack.isEmpty()) {
+            selectTab(Tab.Overview)
+            return true
+        }
         stopLogs()
         _state.update { it.copy(stack = it.stack.dropLast(1)) }
         _state.value.detail?.let(::load) ?: refreshTab()
