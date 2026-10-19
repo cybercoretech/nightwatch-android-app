@@ -324,3 +324,21 @@ private fun launchReader(call: Call, emit: (LogLine) -> Unit, done: () -> Unit):
         done()
     }
 }.apply { isDaemon = true; name = "nightwatch-logs"; start() }
+
+/**
+ * `nightwatch://add?url=…&token=nw_…&name=…`, as printed by
+ * `nightwatchd token add --qr`. The URL must pass [normalizeBaseUrl] and the
+ * token must look like one; anything else is ignored.
+ */
+fun parsePairing(uri: android.net.Uri?): Pairing? =
+    uri?.let { pairingFrom(it.scheme, it.host, it::getQueryParameter) }
+
+fun pairingFrom(scheme: String?, host: String?, param: (String) -> String?): Pairing? {
+    if (scheme != "nightwatch" || host != "add") return null
+    val url = param("url")?.let { normalizeBaseUrl(it) } ?: return null
+    val token = param("token")?.trim()?.takeIf { TOKEN.matches(it) } ?: return null
+    val name = param("name")?.take(40)?.filter { it.isLetterOrDigit() || it in " -_." }.orEmpty()
+    return Pairing(url.toString(), token, name)
+}
+
+private val TOKEN = Regex("^nw_[0-9a-f]{8}_[0-9a-f]{64}$")

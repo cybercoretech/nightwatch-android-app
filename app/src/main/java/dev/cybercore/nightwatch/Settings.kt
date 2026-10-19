@@ -2,6 +2,13 @@ package dev.cybercore.nightwatch
 
 import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,11 +44,15 @@ fun AddHostScreen(model: NightwatchModel, state: UiState) {
     var token by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
     var busy by remember { mutableStateOf(false) }
+    LaunchedEffect(state.pairing) {
+        state.pairing?.let { p -> url = p.url; token = p.token; if (label.isBlank()) label = p.name; error = null; model.consumePairing() }
+    }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         if (state.hosts.isEmpty()) {
             Text("NIGHTWATCH", style = MaterialTheme.typography.headlineMedium, color = Grid.cyan)
             Text(stringResource(R.string.welcome), color = Grid.muted, style = MaterialTheme.typography.bodyMedium)
         }
+        if (token.isNotBlank() && url.isNotBlank()) Text(stringResource(R.string.pairing_ready), color = Grid.green, style = MaterialTheme.typography.bodySmall)
         Panel(accent = Grid.purple) {
             Text(stringResource(R.string.add_host_steps), style = MaterialTheme.typography.bodySmall, color = Grid.fg)
         }
@@ -49,10 +60,18 @@ fun AddHostScreen(model: NightwatchModel, state: UiState) {
             label = { Text(stringResource(R.string.gateway_url)) },
             placeholder = { Text("http://blackbox.tailXXXX.ts.net:8769") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri))
-        OutlinedTextField(token, { token = it; error = null }, Modifier.fillMaxWidth(), singleLine = true,
+        var showToken by remember { mutableStateOf(false) }
+        // 76 characters: wrap instead of scrolling off, and let the user check it.
+        OutlinedTextField(token, { token = it.trim(); error = null }, Modifier.fillMaxWidth(), singleLine = false, maxLines = 3,
             label = { Text(stringResource(R.string.device_token)) },
             placeholder = { Text("nw_…") },
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (showToken) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                IconButton(onClick = { showToken = !showToken }) {
+                    Icon(if (showToken) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                        stringResource(if (showToken) R.string.hide_token else R.string.show_token))
+                }
+            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
         OutlinedTextField(label, { label = it }, Modifier.fillMaxWidth(), singleLine = true,
             label = { Text(stringResource(R.string.host_name_optional)) })

@@ -2,11 +2,14 @@
     <string name="app_name">Nightwatch</string>
     <string name="tagline">Cybercore on watch</string>
     <string name="welcome">Watch and run your Cybercore hosts from your phone: services, stacks, diagnostics and alerts, over your tailnet.</string>
-    <string name="add_host_steps" tools:ignore="TypographyDashes">On the host:\n1. Install nightwatchd (packaging/install.sh).\n2. nightwatchd token add \"My phone\" --operate\n3. Enter its tailnet URL and the token here.\n\nA token made without --operate can only look.</string>
+    <string name="add_host_steps" tools:ignore="TypographyDashes">On the host:\n1. Install nightwatchd (packaging/install.sh).\n2. nightwatchd token add \"My phone\" --operate --qr\n3. Scan the QR code, or enter the tailnet URL and token here.\n\nA token made without --operate can only look.</string>
     <string name="gateway_url">Gateway URL</string>
     <string name="device_token">Device token</string>
     <string name="host_name_optional">Name (optional)</string>
     <string name="connect">Connect</string>
+    <string name="show_token">Show token</string>
+    <string name="hide_token">Hide token</string>
+    <string name="pairing_ready">Filled in from a pairing link. Check the URL, then Connect.</string>
     <string name="checking">Checking…</string>
     <string name="bad_url">Use the host\'s full MagicDNS name (….ts.net) for http, or an https URL.</string>
     <string name="unreachable">unreachable</string>

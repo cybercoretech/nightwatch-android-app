@@ -57,8 +57,12 @@ class MainActivity : ComponentActivity() {
         model?.refresh()
     }
 
-    /** A notification tap opens that host's alerts. */
+    /** A pairing link pre-fills Add host; a notification tap opens that host's alerts. */
     private fun handle(intent: Intent?) {
+        parsePairing(intent?.data)?.let { p ->
+            window.decorView.post { model?.pair(p) }
+            return
+        }
         val host = intent?.getStringExtra(AlertSync.EXTRA_HOST) ?: return
         window.decorView.post {
             model?.let { m ->

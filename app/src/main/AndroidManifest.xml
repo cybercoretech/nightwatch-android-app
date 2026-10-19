@@ -19,6 +19,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Pairing links printed by nightwatchd (token add, qr option); they only pre-fill Add host. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="nightwatch" android:host="add" />
+            </intent-filter>
         </activity>
         <service android:name=".NightwatchPushService" android:exported="false">
             <intent-filter>

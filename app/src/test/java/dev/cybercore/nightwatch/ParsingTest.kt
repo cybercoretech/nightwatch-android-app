@@ -40,4 +40,17 @@ class ParsingTest {
         assertEquals("a **b", renderMarkdown("a **b").text)
         assertEquals("x `y", renderMarkdown("x `y").text)
     }
+
+    @Test
+    fun pairingLinks() {
+        val tok = "nw_2b0a7dc2_" + "a".repeat(64)
+        val q = mapOf("url" to "http://blackbox.tail9311b5.ts.net:8769", "token" to tok, "name" to "blackbox<script>")
+        val p = pairingFrom("nightwatch", "add", q::get)!!
+        assertEquals("http://blackbox.tail9311b5.ts.net:8769/", p.url)
+        assertEquals(tok, p.token)
+        assertEquals("blackboxscript", p.name)
+        assertNull(pairingFrom("https", "add", q::get))
+        assertNull(pairingFrom("nightwatch", "add", (q + ("url" to "http://evil.example:8769"))::get))
+        assertNull(pairingFrom("nightwatch", "add", (q + ("token" to "nw_x_y"))::get))
+    }
 }

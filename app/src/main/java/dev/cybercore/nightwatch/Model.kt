@@ -30,6 +30,9 @@ sealed interface Detail {
     data object PushSettings : Detail
 }
 
+/** Host details from a `nightwatch://add` pairing link, waiting for the user to connect. */
+data class Pairing(val url: String, val token: String, val name: String)
+
 /** An action waiting for the user's yes and their fingerprint. */
 data class Confirm(
     val title: String,
@@ -75,6 +78,7 @@ data class UiState(
     val confirm: Confirm? = null,
     val busy: Set<String> = emptySet(),
     val message: String? = null,
+    val pairing: Pairing? = null,
 ) {
     val host: Host? get() = hosts.firstOrNull { it.id == hostId }
     val detail: Detail? get() = stack.lastOrNull()
@@ -128,6 +132,14 @@ class NightwatchModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun clearMessage() = _state.update { it.copy(message = null) }
+
+    /** Opens Add host pre-filled; nothing is saved until the user taps Connect. */
+    fun pair(p: Pairing) {
+        stopLogs()
+        _state.update { it.copy(pairing = p, stack = if (it.detail == Detail.AddHost) it.stack else it.stack + Detail.AddHost) }
+    }
+
+    fun consumePairing() = _state.update { it.copy(pairing = null) }
     fun setUnitFilter(f: String) = _state.update { it.copy(unitFilter = f) }
 
     // ── hosts ──────────────────────────────────────────────────────────────
