@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <!-- nightwatchd is published with `tailscale serve` over plain HTTP inside
+         the WireGuard tunnel; only MagicDNS names may use it. The app checks
+         the same rule when a host is added (normalizeBaseUrl). -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">ts.net</domain>
+    </domain-config>
+</network-security-config>
