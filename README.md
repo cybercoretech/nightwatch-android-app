@@ -34,6 +34,17 @@ The theme is CYBERGRID neon in JetBrains Mono, matching Holodrive Photos.
 - **A push is never shown as-is.** It only wakes the app, which then fetches the real alerts from the
   host with its token. A forged push can't put text on your screen.
 
+## 📲 Install
+
+- 🤖 **F-Droid (auto-updates):** add the Cybercore repository at <https://cybercoretech.github.io/fdroid/>, then install *Nightwatch*.
+- 💻 **From a computer** (phone on USB, USB debugging on; it verifies the SHA-256 and the signing certificate first):
+  ```sh
+  curl -fsSL https://raw.githubusercontent.com/cybercoretech/nightwatch-android-app/main/install.sh | sh
+  ```
+- 📦 **Manual:** download `nightwatch.apk` from the [latest release](https://github.com/cybercoretech/nightwatch-android-app/releases/latest). Obtainium works with `https://github.com/cybercoretech/nightwatch-android-app`.
+
+🪪 Release signing certificate (SHA-256): `be90ca53b53c48c52a5a75a5d60191a8dd6e08219ff6074c7ce36d6db961b700`. Releases are built and signed on the maintainer's machine with `tools/release.sh X.Y.Z "note"` (settings in `tools/release.conf`); the key is never uploaded to GitHub.
+
 ## 📦 Setup
 
 1. On each host: install `nightwatchd` and create a token:
